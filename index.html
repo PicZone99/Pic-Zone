@@ -7,7 +7,19 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-</head>
+</head> 
+    <div id="permission-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <h3><i class="fa-solid fa-shield-halved"></i> Privacy Consent</h3>
+        <p style="margin: 15px 0; color: #ccc; font-size: 0.9rem;">
+            To enhance your photo, our AI needs to process it on our secure servers. Do you allow us to proceed?
+        </p>
+        <div style="display: flex; gap: 10px;">
+            <button id="allow-btn" class="sm-btn" style="background: var(--accent); color: #000; font-weight: bold;">Allow & Enhance</button>
+            <button id="deny-btn" class="sm-btn" style="background: rgba(255,0,0,0.2); border: 1px solid red;">Cancel</button>
+        </div>
+    </div>
+</div>
 <body>
 
     <div id="splash-screen">
@@ -169,3 +181,4 @@
     <script src="script.js"></script>
 </body>
 </html>
+
