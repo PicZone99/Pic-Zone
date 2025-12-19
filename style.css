@@ -143,6 +143,7 @@ body {
     padding: 10px;
     border: 1px solid var(--glass-border);
     overflow: hidden;
+    position: relative;
 }
 
 .image-preview-area img {
@@ -157,12 +158,99 @@ body {
     border-radius: 24px;
     border: 1px solid var(--glass-border);
     text-align: left;
+    backdrop-filter: blur(10px);
 }
 
 .controls-area h3 {
     margin-bottom: 15px;
     font-size: 1.1rem;
     color: var(--accent);
+}
+
+/* Enhancement Level Buttons */
+.levels {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 25px;
+}
+
+.lvl-btn {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--glass-border);
+    color: #ccc;
+    padding: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: 0.3s;
+}
+
+.lvl-btn.active, .lvl-btn:hover {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+/* --- Settings Modal Improved --- */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: #1a1a2e;
+    margin: 5% auto;
+    padding: 30px;
+    border-radius: 24px;
+    width: 90%;
+    max-width: 450px;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    color: white;
+    box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+}
+
+.close-modal {
+    position: absolute;
+    right: 20px;
+    top: 15px;
+    font-size: 24px;
+    cursor: pointer;
+    color: var(--text);
+}
+
+.setting-item {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 15px;
+    border: 1px solid var(--glass-border);
+}
+
+.setting-item h3 {
+    font-size: 1rem;
+    color: var(--accent);
+    margin-bottom: 10px;
+}
+
+.sm-btn {
+    background: var(--primary);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-right: 5px;
+    font-size: 0.85rem;
 }
 
 /* --- Buttons & Inputs --- */
@@ -180,6 +268,7 @@ body {
 
 .btn-primary:hover {
     box-shadow: 0 0 20px rgba(138, 43, 226, 0.5);
+    transform: scale(1.02);
 }
 
 input[type="range"] {
@@ -207,4 +296,19 @@ footer {
 
 .socials i:hover {
     color: var(--accent);
+}
+
+/* --- Splash Screen --- */
+#splash-screen {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: #0f0c29;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    color: var(--accent);
+    font-size: 2rem;
+    transition: opacity 1s ease;
 }
