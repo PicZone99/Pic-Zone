@@ -23,29 +23,18 @@
                 <h4><i class="fas fa-user-circle"></i> Account</h4>
                 <div class="sub-links">
                     <p>Change Username</p>
-                    <p>Update Profile Picture</p>
-                    <p>Login with Gmail</p>
+                    <p>Update Profile</p>
                     <p>Logout</p>
                 </div>
             </div>
             <div class="setting-item">
-                <h4><i class="fas fa-palette"></i> Theme / Appearance</h4>
-                <div class="theme-buttons">
-                    <button onclick="setTheme('light')" class="theme-btn">Light Mode</button>
-                    <button onclick="setTheme('dark')" class="theme-btn dark">Dark Mode</button>
-                </div>
-            </div>
-            <div class="setting-item">
-                <h4><i class="fas fa-language"></i> Language</h4>
-                <p>English Only</p>
-            </div>
-            <div class="setting-item">
-                <h4><i class="fas fa-bell"></i> Notification</h4>
-                <button onclick="requestNotification()" class="action-btn">Allow Permission</button>
+                <h4><i class="fas fa-palette"></i> Theme</h4>
+                <button onclick="setTheme('light')" class="theme-btn">Light</button>
+                <button onclick="setTheme('dark')" class="theme-btn dark">Dark</button>
             </div>
             <div class="setting-item">
                 <h4><i class="fas fa-info-circle"></i> About</h4>
-                <p id="about-text" class="small-text"></p>
+                <p id="about-text" style="font-size: 12px; color: #666;"></p>
             </div>
         </div>
     </div>
@@ -54,13 +43,12 @@
         <div class="bubble-container" id="bubble-bg"></div>
         
         <header>
-            <div class="logo" onclick="location.reload()">Pic Zone</div>
+            <div class="logo">Pic Zone</div>
             <nav class="nav-links">
                 <a href="#">Home</a>
                 <a href="#">Enhance</a>
-                <a href="#">Features</a>
-                <span onclick="toggleSettings()" class="settings-trigger"><i class="fas fa-cog"></i> Settings</span>
-                <button class="login-btn-nav">Login</button>
+                <span onclick="toggleSettings()" style="cursor:pointer"><i class="fas fa-cog"></i> Settings</span>
+                <button class="login-btn">Login</button>
             </nav>
         </header>
 
@@ -68,28 +56,22 @@
             <h1>Increase Photo Quality Instantly</h1>
             <p>Turn blurry photos into clear HD images using AI.</p>
             
-            <div class="drag-drop-box" id="drop-zone">
-                <i class="fas fa-cloud-upload-alt upload-icon"></i>
-                <br>
-                <input type="file" id="fileInput" hidden accept="image/*">
+            <div class="drag-drop-box">
+                <i class="fas fa-cloud-upload-alt" style="font-size: 50px; color: #7b1fa2;"></i>
+                <br><br>
+                <input type="file" id="fileInput" hidden>
                 <button class="upload-btn" onclick="document.getElementById('fileInput').click()">Upload Photo</button>
-                <p class="drag-text">or Drag & Drop JPG/PNG here (Max 10MB)</p>
+                <p style="margin-top:15px">Max 10MB (JPG/PNG)</p>
             </div>
         </section>
 
-        <section class="features-section">
-            <div class="card"><i class="fas fa-upload"></i><h3>Upload Image</h3></div>
-            <div class="card"><i class="fas fa-magic"></i><h3>AI Enhances Quality</h3></div>
-            <div class="card"><i class="fas fa-download"></i><h3>Download HD Photo</h3></div>
+        <section class="features">
+            <div class="card"><i class="fas fa-upload"></i><h3>Upload</h3></div>
+            <div class="card"><i class="fas fa-magic"></i><h3>Enhance</h3></div>
+            <div class="card"><i class="fas fa-download"></i><h3>Download</h3></div>
         </section>
 
         <footer>
-            <div class="footer-links">
-                <span>About</span> | <span>Privacy Policy</span> | <span>Help</span> | <span>Contact</span>
-            </div>
-            <div class="social-icons">
-                <i class="fab fa-facebook"></i> <i class="fab fa-instagram"></i> <i class="fab fa-twitter"></i>
-            </div>
             <p>&copy; 2025 Pic Zone. All rights reserved.</p>
         </footer>
     </div>
