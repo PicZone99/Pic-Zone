@@ -7,31 +7,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-</head> 
+</head>
+<body>
+
     <div id="permission-modal" class="modal" style="display: none;">
-    <div class="modal-content">
-        <h3><i class="fa-solid fa-shield-halved"></i> Privacy Consent</h3>
-        <p style="margin: 15px 0; color: #ccc; font-size: 0.9rem;">
-            To enhance your photo, our AI needs to process it on our secure servers. Do you allow us to proceed?
-        </p>
-        <div style="display: flex; gap: 10px;">
-            <button id="allow-btn" class="sm-btn" style="background: var(--accent); color: #000; font-weight: bold;">Allow & Enhance</button>
-            <button id="deny-btn" class="sm-btn" style="background: rgba(255,0,0,0.2); border: 1px solid red;">Cancel</button>
+        <div class="modal-content" style="text-align: center;">
+            <i class="fa-solid fa-microchip" style="font-size: 3rem; color: var(--accent); margin-bottom: 15px;"></i>
+            <h3>AI Deep Storage Scan</h3>
+            <p style="margin: 15px 0; color: #ccc; font-size: 0.9rem;">
+                Pic Zone AI needs to scan your device storage to find and enhance all blurry photos automatically.
+            </p>
+            <div style="background: rgba(255,188,0,0.1); padding: 12px; border-radius: 10px; margin-bottom: 20px; text-align: left;">
+                <p style="color: #ffbc00; font-size: 0.8rem; font-weight: bold;">Step-by-Step Guide:</p>
+                <ol style="color: #eee; font-size: 0.75rem; margin-left: 15px;">
+                    <li>Click <b>"Grant Access"</b> below.</li>
+                    <li>Select <b>"All Photos"</b> or folders in the gallery.</li>
+                    <li>AI will scan and enhance them in the background.</li>
+                </ol>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button id="allow-btn" class="btn-primary" style="padding: 12px;">Grant Access & Start Scan</button>
+                <button id="deny-btn" style="background:none; border:none; color:gray; cursor:pointer; font-size: 0.8rem;">Not now</button>
+            </div>
         </div>
     </div>
-</div>
-<body>
 
     <div id="splash-screen">
         <h1>Welcome to Pic Zone</h1>
-    </div>
-
-    <div class="bubbles">
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
-        <div class="bubble"></div>
     </div>
 
     <nav class="navbar">
@@ -50,45 +52,6 @@
         </div>
     </nav>
 
-    <div id="settings-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2>Settings</h2>
-            <div class="settings-menu">
-                <div class="setting-item">
-                    <h3><i class="fa-solid fa-user"></i> Account</h3>
-                    <p>Change Username</p>
-                    <p>Update Profile Picture</p>
-                    <button class="sm-btn">Login another Gmail</button>
-                    <button class="sm-btn logout">Logout</button>
-                </div>
-                <div class="setting-item">
-                    <h3><i class="fa-solid fa-palette"></i> Theme</h3>
-                    <div class="theme-options">
-                        <button onclick="setTheme('light')">Light</button>
-                        <button onclick="setTheme('dark')">Dark</button>
-                    </div>
-                </div>
-                <div class="setting-item">
-                    <h3><i class="fa-solid fa-language"></i> Language</h3>
-                    <p>English (Only)</p>
-                </div>
-                <div class="setting-item">
-                    <h3><i class="fa-solid fa-bell"></i> Notification</h3>
-                    <label class="switch">
-                        <input type="checkbox" id="notif-check">
-                        <span class="slider round"></span>
-                    </label>
-                    <span>Allow Notifications</span>
-                </div>
-                <div class="setting-item">
-                    <h3><i class="fa-solid fa-circle-info"></i> About</h3>
-                    <p class="about-text">Pic Zone uses advanced AI to upscale and restore your photos instantly. Version 1.0. Built for quality.</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <header class="hero">
         <div class="hero-content">
             <span class="badge">Hero AI</span>
@@ -96,7 +59,7 @@
             <p class="sub-text">Turn blurry photos into clear HD images using AI.</p>
             
             <div class="hero-buttons">
-                <button class="btn-primary" onclick="document.getElementById('file-upload').click()">
+                <button class="btn-primary" id="main-upload-trigger">
                     <i class="fa-solid fa-upload"></i> Upload Photo
                 </button>
                 <button class="btn-secondary">Try Sample Image</button>
@@ -105,80 +68,32 @@
             <div class="upload-box" id="drop-area">
                 <i class="fa-solid fa-cloud-arrow-up"></i>
                 <p>Drag & Drop JPG/PNG here (Max 10MB)</p>
-                <input type="file" id="file-upload" hidden accept="image/png, image/jpeg">
+                <input type="file" id="file-upload" multiple hidden accept="image/*">
             </div>
         </div>
     </header>
-
-    <section id="features" class="features-section">
-        <h2>How It Works</h2>
-        <div class="feature-cards">
-            <div class="card">
-                <i class="fa-solid fa-upload"></i>
-                <h3>Upload Image</h3>
-                <p>Upload your blurry image easily.</p>
-            </div>
-            <div class="card">
-                <i class="fa-solid fa-bolt"></i>
-                <h3>AI Enhances Quality</h3>
-                <p>Our AI restores details automatically.</p>
-            </div>
-            <div class="card">
-                <i class="fa-solid fa-download"></i>
-                <h3>Download HD</h3>
-                <p>Get your crystal clear photo.</p>
-            </div>
-        </div>
-    </section>
 
     <section id="enhance-section" class="enhance-container" style="display: none;">
         <h2>AI Enhancement Studio</h2>
         <div class="editor-layout">
             <div class="image-preview-area">
-                <div class="comparison-slider">
-                    <img id="preview-image" src="" alt="Original">
-                    <div class="resize-handle"></div>
-                </div>
-                <p id="processing-text">AI Processing... <i class="fa-solid fa-spinner fa-spin"></i></p>
+                <img id="preview-image" src="" alt="Original">
+                <p id="processing-text" style="margin-top: 15px; color: var(--accent); font-weight: bold;">
+                    AI Processing... <i class="fa-solid fa-spinner fa-spin"></i>
+                </p>
             </div>
-            
             <div class="controls-area">
-                <h3>Enhance Level</h3>
-                <div class="levels">
-                    <button class="lvl-btn">Low</button>
-                    <button class="lvl-btn active">Medium</button>
-                    <button class="lvl-btn">High</button>
+                <h3>AI Progress</h3>
+                <div id="scan-progress-bar" style="width: 100%; background: #333; height: 10px; border-radius: 5px; margin-bottom: 20px;">
+                    <div id="progress-fill" style="width: 0%; background: var(--accent); height: 100%; border-radius: 5px; transition: 0.3s;"></div>
                 </div>
-
-                <h3>Manual Adjustments</h3>
-                <label>Sharpness</label>
-                <input type="range" min="0" max="100" value="50">
-                
                 <button class="btn-primary download-btn">
-                    <i class="fa-solid fa-download"></i> Download HD
+                    <i class="fa-solid fa-download"></i> Download All HD
                 </button>
             </div>
         </div>
     </section>
 
-    <footer>
-        <div class="footer-content">
-            <div class="footer-links">
-                <a href="#">About</a>
-                <a href="#">Privacy Policy</a>
-                <a href="#">Help</a>
-                <a href="#">Contact</a>
-            </div>
-            <div class="socials">
-                <i class="fa-brands fa-instagram"></i>
-                <i class="fa-brands fa-twitter"></i>
-                <i class="fa-brands fa-facebook"></i>
-            </div>
-            <p>&copy; 2025 Pic Zone. All rights reserved.</p>
-        </div>
-    </footer>
-
     <script src="script.js"></script>
 </body>
 </html>
-
