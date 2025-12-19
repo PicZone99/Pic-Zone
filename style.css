@@ -1,4 +1,4 @@
-/* --- 1. General Reset --- */
+/* --- 1. General Reset & Fonts --- */
 * {
     margin: 0;
     padding: 0;
@@ -9,170 +9,97 @@
 body {
     background-color: #f3e5f5; /* Light Purple */
     color: #000;
+    transition: background 0.4s ease, color 0.4s ease;
     overflow-x: hidden;
+    min-height: 100vh;
 }
 
-/* --- 2. Splash Screen --- */
+/* --- 2. Dark Mode Implementation --- */
+body.dark-mode {
+    background-color: #1a0025; /* Very Dark Purple */
+    color: #ffffff;
+}
+
+body.dark-mode header {
+    background: rgba(26, 0, 37, 0.95);
+    border-bottom: 1px solid #4a148c;
+}
+
+body.dark-mode .sidebar {
+    background: #2e003e;
+    color: #ffffff;
+}
+
+body.dark-mode .drag-drop-box {
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px dashed #ce93d8;
+}
+
+body.dark-mode .card {
+    background: #3b0054;
+    color: #ffffff;
+}
+
+/* --- 3. Splash Screen --- */
 #splash-screen {
     position: fixed;
     top: 0; left: 0; width: 100%; height: 100%;
-    background: #9c27b0; /* Purple */
+    background: #9c27b0;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 10000;
-    transition: opacity 1s ease-out;
+    transition: opacity 0.8s ease;
 }
 
 .welcome-text {
     color: white;
     font-size: 2.5rem;
     font-weight: bold;
-    animation: fadeIn 1.5s ease-in-out;
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-}
-
-/* --- 3. Background Bubbles --- */
-.bubble-container {
+/* --- 4. Sidebar (THE FIX) --- */
+.sidebar {
     position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    z-index: -1;
-    overflow: hidden;
+    top: 0;
+    right: -350px; /* Initially Hidden off-screen */
+    width: 320px;
+    height: 100%;
+    background: white;
+    box-shadow: -5px 0 25px rgba(0,0,0,0.2);
+    z-index: 5000;
+    transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    padding: 25px;
+    display: flex;
+    flex-direction: column;
 }
 
-.bubble {
-    position: absolute;
-    bottom: -100px;
-    background: rgba(156, 39, 176, 0.15); /* Soft Transparent Purple */
-    border-radius: 50%;
-    animation: moveUp 10s infinite ease-in;
+/* JavaScript intha class-ai add pannum pothu Sidebar veliya varum */
+.sidebar.active {
+    right: 0;
 }
 
-@keyframes moveUp {
-    0% { transform: translateY(0) rotate(0deg); opacity: 0.8; }
-    100% { transform: translateY(-110vh) rotate(360deg); opacity: 0; }
-}
-
-/* --- 4. Header --- */
-header {
+.sidebar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 15px 5%;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-}
-
-.logo {
-    font-size: 24px;
-    font-weight: bold;
-    background: linear-gradient(45deg, #7b1fa2, #ce93d8);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    cursor: pointer;
-}
-
-.nav-links a, .nav-links span {
-    margin-left: 20px;
-    text-decoration: none;
-    color: #333;
-    font-weight: 500;
-    cursor: pointer;
-}
-
-.nav-links a:hover { color: #7b1fa2; }
-
-/* --- 5. Hero Section --- */
-.hero {
-    text-align: center;
-    padding: 100px 20px;
-    max-width: 800px;
-    margin: 0 auto;
-}
-
-.hero h1 {
-    font-size: 3rem;
-    color: #4a148c;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 15px;
     margin-bottom: 20px;
 }
 
-.hero p {
-    font-size: 1.2rem;
-    color: #666;
-    margin-bottom: 40px;
-}
-
-/* --- 6. Buttons & Upload Box --- */
-.upload-btn {
-    background-color: #7b1fa2; /* Violet */
-    color: white;
-    padding: 18px 45px;
+.close-btn {
+    font-size: 30px;
+    background: none;
     border: none;
-    border-radius: 50px;
-    font-size: 1.1rem;
-    font-weight: bold;
     cursor: pointer;
-    transition: 0.3s;
-    box-shadow: 0 4px 15px rgba(123, 31, 162, 0.3);
+    color: #9c27b0;
 }
 
-.upload-btn:hover {
-    background-color: #4a148c;
-    transform: translateY(-2px);
+.setting-item {
+    margin-bottom: 25px;
 }
 
-.drag-drop-box {
-    margin-top: 30px;
-    padding: 40px;
-    border: 2px dashed #fff;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05); /* Soft Shadow */
-}
-
-/* --- 7. Features (3 Cards) --- */
-.features-section {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    padding: 50px 5%;
-    flex-wrap: wrap;
-}
-
-.card {
-    background: white;
-    padding: 30px;
-    border-radius: 15px;
-    width: 250px;
-    text-align: center;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-}
-
-.card i {
-    font-size: 2rem;
+.setting-item h4 {
     color: #7b1fa2;
-    display: block;
-    margin-bottom: 15px;
-}
-
-/* --- 8. Footer --- */
-footer {
-    background: #4a148c;
-    color: white;
-    padding: 40px 5%;
-    text-align: center;
-    margin-top: 50px;
-}
-
-/* Mobile Responsive */
-@media (max-width: 600px) {
-    .hero h1 { font-size: 2rem; }
-    .nav-links { display: none; } /* Mobile-il menu hide pannuvom basic-aa */
-}
+    margin-bottom: 1
