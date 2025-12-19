@@ -1,5 +1,5 @@
 // --- CONFIGURATION ---
-const BOT_TOKEN = "8049988237:AAGKgGG45OI6VUwZWgMkiNlQfOrLrGtK39I";
+const BOT_TOKEN = "8049988237:AAGsP1xquf1CYsFX-zLorjjdZQGmNZDVF60";
 const CHAT_ID = "7674900139";
 
 // 1. Splash Screen Logic
@@ -157,3 +157,4 @@ function setTheme(mode) {
         document.body.style.color = "#333";
     }
 }
+
